@@ -20,7 +20,7 @@ log("OKAY", "Imported: urllib.request.urlopen")
 init(autoreset=True)
 
 REMOTE_GIT = "https://github.com/belivipro9x99/dealHunterSuiteProxyServerBuild.git"
-REMOTE_VERSION_FILE = "http://localhost/version"
+REMOTE_VERSION_FILE = "https://raw.githubusercontent.com/belivipro9x99/dealHunterSuiteProxyServerBuild/master/version"
 REMOTE_VERSION = None
 VERSION = None
 
