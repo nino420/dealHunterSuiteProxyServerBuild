@@ -1,0 +1,36 @@
+version: 2.0
+
+jobs:
+  build:
+    working_directory: ~/project
+    
+    docker:
+      - image: circleci/python:latest
+
+    steps:
+      - checkout:
+          path: ~/project
+
+      - run:
+          name: Install Dependencies
+          command: |
+            sudo apt update
+            sudo apt install dos2unix
+            pip3 install colorama
+            pip3 install gitpython
+
+      - run:
+          name: Build 🏗
+          working_directory: ~/project
+          command: |
+            echo 'export PYTHONPATH=$PWD' >> $BASH_ENV
+            source $BASH_ENV
+
+            python3 build/build.py
+      - run:
+          name: Deploy 🚀
+          working_directory: ~/project/build
+          command: |
+            dos2unix deploy.sh
+            sudo chmod u+x deploy.sh
+            ./deploy.sh
