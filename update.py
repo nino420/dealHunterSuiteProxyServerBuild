@@ -37,6 +37,26 @@ def logStatus(text, status, overWrite = False):
 	statusText = [f"{Fore.RED}✗ ERRR", f"{Fore.YELLOW}● WAIT", f"{Fore.GREEN}✓ OKAY"]
 	log("INFO", "{:66}{}{}".format(text, statusText[status + 1], Fore.RESET), resetCursor = (not overWrite))
 
+def copyDir(src, dst, mode = 777):
+	files = os.listdir(src)
+
+	if (not os.path.isdir(dst)):
+		os.mkdir(dst, mode)
+
+	for f in files:
+		s = os.path.join(src, f)
+		d = os.path.join(dst, f)
+
+		if (os.path.isfile(d)):
+			os.remove(d)
+		elif (os.path.isdir(d)):
+			shutil.rmtree(d)
+
+		if (os.path.isfile(s)):
+			shutil.copy2(s, d)
+		elif (os.path.isdir(s)):
+			copyDir(s, d)
+
 if (os.path.isfile("version")):
 	with open("version", "r") as f:
 		VERSION = int(f.read())
@@ -65,30 +85,28 @@ if (REMOTE_VERSION > VERSION):
 	uFiles = os.listdir(UPDATE_TMP)
 
 	for uFile in uFiles:
-		if (uFile in [".git", ".circleci"]):
+		if (uFile in [".git", ".circleci", ".gitignore"]):
 			continue
 
 		target = f"{UPDATE_TMP}/{uFile}"
-		dest = f"{uFile}"
+		dest = f"./{uFile}"
 		isFile = os.path.isfile(target)
 
 		msg = f"Copying {'File' if (isFile) else 'Dir'}: {target} -> {dest}"
 
 		logStatus(msg, 0)
 
-		if (os.path.isdir(dest)):
-			shutil.rmtree(dest)
-		elif (os.path.isfile(dest)):
+		if (os.path.isfile(dest)):
 			os.remove(dest)
+		elif (os.path.isdir(dest)):
+			shutil.rmtree(dest)
 
 		if (os.path.isfile(target)):
 			shutil.copy2(target, dest)
-		else:
-			shutil.copytree(target, dest)
+		elif (os.path.isdir(target)):
+			copyDir(f"{target}/", f"{dest}/")
 
 		logStatus(msg, 1, True)
-
-	logStatus("Copying Files", 1, True)
 
 	log("INFO", "Updated Successfully! Restarting...")
 
