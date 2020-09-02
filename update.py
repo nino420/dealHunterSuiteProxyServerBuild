@@ -35,7 +35,7 @@ UPDATE_TMP = "./__update"
 
 def logStatus(text, status, overWrite = False):
 	statusText = [f"{Fore.RED}✗ ERRR", f"{Fore.YELLOW}● WAIT", f"{Fore.GREEN}✓ OKAY"]
-	log("INFO", "{:48}{}{}".format(text, statusText[status + 1], Fore.RESET), resetCursor = (not overWrite))
+	log("INFO", "{:66}{}{}".format(text, statusText[status + 1], Fore.RESET), resetCursor = (not overWrite))
 
 if (os.path.isfile("version")):
 	with open("version", "r") as f:
@@ -62,7 +62,6 @@ if (REMOTE_VERSION > VERSION):
 	Repo.clone_from(REMOTE_GIT, UPDATE_TMP)
 	logStatus("Cloning From Remote", 1, True)
 
-	logStatus("Copying Files", 0)
 	uFiles = os.listdir(UPDATE_TMP)
 
 	for uFile in uFiles:
@@ -70,13 +69,24 @@ if (REMOTE_VERSION > VERSION):
 			continue
 
 		target = f"{UPDATE_TMP}/{uFile}"
-		dest = f"../{uFile}"
-		logStatus(f"Copying Files: {target} -> {dest}", 0, True)
+		dest = f"{uFile}"
+		isFile = os.path.isfile(target)
+
+		msg = f"Copying {'File' if (isFile) else 'Dir'}: {target} -> {dest}"
+
+		logStatus(msg, 0)
+
+		if (os.path.isdir(dest)):
+			shutil.rmtree(dest)
+		elif (os.path.isfile(dest)):
+			os.remove(dest)
 
 		if (os.path.isfile(target)):
 			shutil.copy2(target, dest)
 		else:
 			shutil.copytree(target, dest)
+
+		logStatus(msg, 1, True)
 
 	logStatus("Copying Files", 1, True)
 
