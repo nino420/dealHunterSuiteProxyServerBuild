@@ -31,7 +31,7 @@ jobs:
           name: Deploy 🚀
           working_directory: ~/project/build
           command: |
-            echo 'export COMMIT_MESSAGE=$(git log --format=oneline -n 1 $CIRCLE_SHA1)' >> $BASH_ENV
+            echo 'export COMMIT_MESSAGE=$(git log --format=%B -n 1 $CIRCLE_SHA1)' >> $BASH_ENV
             source $BASH_ENV
 
             dos2unix deploy.sh
