@@ -41,11 +41,11 @@ cp -rf $tmpdir/. .
 
 echo -e " \033[1;37m* \033[1;34mCREATING COMMIT"
 git add .
-git commit -m "🛠 BUILD: $CIRCLE_BUILD_NUM (VER $(cat version))" -m "Commit $CIRCLE_SHA1"
+git commit -m "🛠 CI BUILD: $CIRCLE_BUILD_NUM (Proxy Version $(cat version))" -m "Commit $CIRCLE_SHA1 by $CIRCLE_USERNAME"
 git push -f -u origin master
 
 end=$(date +%s.%N)
-echo -e " \033[1;37m→ \033[1;33m$(php -r "echo $end - $start;")s"
+echo -e " \033[1;37m→ \033[1;33m$(node -p "$end - $start")s"
 echo -e "\033[1;32m✓\033[0m Done!"
 
 popd > /dev/null
