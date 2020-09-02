@@ -65,7 +65,7 @@ if (REMOTE_VERSION > VERSION):
 	uFiles = os.listdir(UPDATE_TMP)
 
 	for uFile in uFiles:
-		if (uFile in [".git"]):
+		if (uFile in [".git", ".circleci"]):
 			continue
 
 		target = f"{UPDATE_TMP}/{uFile}"
