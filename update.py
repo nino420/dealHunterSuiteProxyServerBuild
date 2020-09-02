@@ -1,3 +1,10 @@
+#? |-----------------------------------------------------------------------------------------------|
+#? |  update.py                                                                                    |
+#? |                                                                                               |
+#? |  Copyright (c) 2020 Belikhun. All right reserved                                              |
+#? |  Licensed under the MIT License. See LICENSE in the project root for license information.     |
+#? |-----------------------------------------------------------------------------------------------|
+
 from lib import ehook
 from lib.log import log
 from colorama import init, Fore
@@ -46,9 +53,10 @@ log("OKAY", f"Remote Version: {REMOTE_VERSION}")
 if (REMOTE_VERSION > VERSION):
 	log("INFO", "An update is available! Updating...")
 
-	logStatus("Removing Old Update", 0)
-	shutil.rmtree(UPDATE_TMP)
-	logStatus("Removing Old Update", 1, True)
+	if (os.path.isdir(UPDATE_TMP)):
+		logStatus("Removing Old Update", 0)
+		shutil.rmtree(UPDATE_TMP)
+		logStatus("Removing Old Update", 1, True)
 
 	logStatus("Cloning From Remote", 0)
 	Repo.clone_from(REMOTE_GIT, UPDATE_TMP)
