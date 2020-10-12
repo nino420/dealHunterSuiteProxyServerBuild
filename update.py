@@ -55,8 +55,8 @@ def startProxy():
 	if sys.platform == 'win32':
 		args = ['"%s"' % arg for arg in args]
 
-	subprocess.Popen(args)
-	sys.exit()
+	os.chdir(PATH)
+	os.execv(sys.executable, args)
 
 def copyDir(src, dst, mode = 0o777):
 	files = os.listdir(src)
