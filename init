@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/data/data/com.termux/files/usr/bin/bash
 #? |-----------------------------------------------------------------------------------------------|
-#? |  init.sh                                                                                      |
+#? |  init                                                                                         |
 #? |                                                                                               |
 #? |  Copyright (c) 2020 Belikhun. All right reserved                                              |
 #? |  Licensed under the MIT License. See LICENSE in the project root for license information.     |
@@ -8,9 +8,16 @@
 
 set -e
 
-apt install curl
-apt install python3
-apt install python3-pip
+cat sudo > /data/data/com.termux/files/usr/bin/sudo
+chmod 777 /data/data/com.termux/files/usr/bin/sudo
+
+apt update
+pkg upgrade
+apt install openssh
+apt install git
+pkg install ncurses-utils
+pkg install curl
+pkg install python
 
 pip3 install -r requirements.txt
 

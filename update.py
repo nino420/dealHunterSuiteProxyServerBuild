@@ -1,3 +1,4 @@
+#!/data/data/com.termux/files/usr/bin/python
 #? |-----------------------------------------------------------------------------------------------|
 #? |  update.py                                                                                    |
 #? |                                                                                               |
@@ -18,30 +19,37 @@ log("OKAY", "Imported: sys")
 import shutil
 log("OKAY", "Imported: shutil")
 
-from git.repo.base import Repo
-log("OKAY", "Imported: git.repo.base.Repo")
+import subprocess
+log("OKAY", "Imported: subprocess")
 
 from urllib.request import urlopen
 log("OKAY", "Imported: urllib.request.urlopen")
 
 init(autoreset=True)
 
+PATH = os.path.dirname(os.path.realpath(__file__))
 REMOTE_GIT = "https://github.com/belivipro9x99/dealHunterSuiteProxyServerBuild.git"
 REMOTE_VERSION_FILE = "https://raw.githubusercontent.com/belivipro9x99/dealHunterSuiteProxyServerBuild/master/version"
 REMOTE_VERSION = None
 VERSION = None
 
-UPDATE_TMP = "./__update"
+UPDATE_TMP = "__update"
+
+def execute(command, executable="sudo"):
+	subprocess.run(f"{executable} {command}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def logStatus(text, status, overWrite = False):
 	statusText = [f"{Fore.RED}✗ ERRR", f"{Fore.YELLOW}● WAIT", f"{Fore.GREEN}✓ OKAY"]
 	log("INFO", "{:66}{}{}".format(text, statusText[status + 1], Fore.RESET), resetCursor = (not overWrite))
 
-def copyDir(src, dst, mode = 777):
+def copyDir(src, dst, mode = 0o777):
 	files = os.listdir(src)
 
 	if (not os.path.isdir(dst)):
-		os.mkdir(dst, mode)
+		oldMask = os.umask(000)
+		os.makedirs(dst)
+		os.chmod(dst, mode)
+		os.umask(oldMask)
 
 	for f in files:
 		s = os.path.join(src, f)
@@ -56,6 +64,8 @@ def copyDir(src, dst, mode = 777):
 			shutil.copy2(s, d)
 		elif (os.path.isdir(s)):
 			copyDir(s, d)
+
+log("DEBG", f"PATH = {PATH}")
 
 if (os.path.isfile("version")):
 	with open("version", "r") as f:
@@ -75,11 +85,13 @@ if (REMOTE_VERSION > VERSION):
 
 	if (os.path.isdir(UPDATE_TMP)):
 		logStatus("Removing Old Update", 0)
+		execute(f"chmod 777 {UPDATE_TMP}")
 		shutil.rmtree(UPDATE_TMP)
 		logStatus("Removing Old Update", 1, True)
 
 	logStatus("Cloning From Remote", 0)
-	Repo.clone_from(REMOTE_GIT, UPDATE_TMP)
+	execute(f"clone {REMOTE_GIT} {UPDATE_TMP}", "git")
+	execute(f"chmod 777 {UPDATE_TMP}")
 	logStatus("Cloning From Remote", 1, True)
 
 	uFiles = os.listdir(UPDATE_TMP)
@@ -92,7 +104,7 @@ if (REMOTE_VERSION > VERSION):
 		dest = f"./{uFile}"
 		isFile = os.path.isfile(target)
 
-		msg = f"Copying {'File' if (isFile) else 'Dir'}: {target} -> {dest}"
+		msg = f"Copying {'File' if (isFile) else 'Dir '}: {target} -> {dest}"
 
 		logStatus(msg, 0)
 
@@ -117,7 +129,7 @@ if (REMOTE_VERSION > VERSION):
 	if sys.platform == 'win32':
 		args = ['"%s"' % arg for arg in args]
 
-	os.execv(sys.executable, args)
+	os.execv("sudo", args)
 else:
 	log("OKAY", "Proxy Server is Up To Date! Starting Server...")
 
