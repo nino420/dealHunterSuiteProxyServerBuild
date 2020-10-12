@@ -47,8 +47,8 @@ def startProxy():
 	print("*" * tSize.columns)
 
 	args = sys.argv[:]
-	args.insert(0, "sudo")
 	args.insert(0, sys.executable)
+	args.insert(0, "sudo")
 	log("DEBG", 'Re-spawning %s' % ' '.join(args))
 
 	if sys.platform == 'win32':
