@@ -36,7 +36,7 @@ VERSION = None
 UPDATE_TMP = "__update"
 
 def whereis(app):
-	command = "which" if (os.name is not "nt") else "where"
+	command = "which" if (os.name != "nt") else "where"
 	result = subprocess.run(f"{command} {app}", shell=True, stdout=subprocess.PIPE)
 
 	return result.stdout.decode().split()
