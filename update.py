@@ -45,9 +45,10 @@ def logStatus(text, status, overWrite = False):
 def startProxy():
 	tSize = os.get_terminal_size()
 	print("*" * tSize.columns)
-	
+
 	args = sys.argv[:]
 	args.insert(0, "sudo")
+	args.insert(0, sys.executable)
 	log("DEBG", 'Re-spawning %s' % ' '.join(args))
 
 	if sys.platform == 'win32':
