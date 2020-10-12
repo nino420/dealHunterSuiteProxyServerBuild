@@ -13,11 +13,11 @@ chmod 777 /data/data/com.termux/files/usr/bin/sudo
 
 apt update
 pkg upgrade
-apt -y install openssh
-apt -y install git
-pkg -y install ncurses-utils
-pkg -y install curl
-pkg -y install python
+apt install -y openssh
+apt install -y git
+pkg install -y ncurses-utils
+pkg install -y curl
+pkg install -y python
 
 pip3 install -r requirements.txt
 
