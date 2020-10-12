@@ -35,6 +35,12 @@ VERSION = None
 
 UPDATE_TMP = "__update"
 
+def whereis(app):
+	command = "which" if (os.name is not "nt") else "where"
+	result = subprocess.run(f"{command} {app}", shell=True, stdout=subprocess.PIPE)
+
+	return result.stdout.decode().split()
+
 def execute(command, executable="sudo"):
 	subprocess.run(f"{executable} {command}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -49,14 +55,14 @@ def startProxy():
 	args = sys.argv[1:]
 	args.insert(0, "proxy.pyc")
 	args.insert(0, sys.executable)
-	args.insert(0, "sudo")
+	args.insert(0, whereis("sudo")[0])
 	log("DEBG", 'Re-spawning %s' % ' '.join(args))
 
 	if sys.platform == 'win32':
 		args = ['"%s"' % arg for arg in args]
 
 	os.chdir(PATH)
-	os.execv(sys.executable, args)
+	os.execv(args[0], args)
 
 def copyDir(src, dst, mode = 0o777):
 	files = os.listdir(src)
