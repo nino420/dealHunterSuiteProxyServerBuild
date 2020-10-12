@@ -42,6 +42,20 @@ def logStatus(text, status, overWrite = False):
 	statusText = [f"{Fore.RED}✗ ERRR", f"{Fore.YELLOW}● WAIT", f"{Fore.GREEN}✓ OKAY"]
 	log("INFO", "{:66}{}{}".format(text, statusText[status + 1], Fore.RESET), resetCursor = (not overWrite))
 
+def startProxy():
+	tSize = os.get_terminal_size()
+	print("*" * tSize.columns)
+	
+	args = sys.argv[:]
+	args.insert(0, "sudo")
+	log("DEBG", 'Re-spawning %s' % ' '.join(args))
+
+	if sys.platform == 'win32':
+		args = ['"%s"' % arg for arg in args]
+
+	subprocess.Popen(args)
+	sys.exit()
+
 def copyDir(src, dst, mode = 0o777):
 	files = os.listdir(src)
 
@@ -120,20 +134,8 @@ if (REMOTE_VERSION > VERSION):
 
 		logStatus(msg, 1, True)
 
-	log("INFO", "Updated Successfully! Restarting...")
-
-	args = sys.argv[:]
-	log("DEBG", 'Re-spawning %s' % ' '.join(args))
-
-	args.insert(0, sys.executable)
-	if sys.platform == 'win32':
-		args = ['"%s"' % arg for arg in args]
-
-	os.execv("sudo", args)
+	log("INFO", "Updated Successfully! Starting Server...")
+	startProxy()
 else:
 	log("OKAY", "Proxy Server is Up To Date! Starting Server...")
-
-	tSize = os.get_terminal_size()
-	print("*" * tSize.columns)
-
-	import proxy
+	startProxy()
