@@ -71,10 +71,7 @@ def copyDir(src, dst, mode = 0o777):
 		s = os.path.join(src, f)
 		d = os.path.join(dst, f)
 
-		if (os.path.isfile(d)):
-			os.remove(d)
-		elif (os.path.isdir(d)):
-			shutil.rmtree(d)
+		execute(f"rm -rf {d}")
 
 		if (os.path.isfile(s)):
 			shutil.copy2(s, d)
@@ -82,6 +79,7 @@ def copyDir(src, dst, mode = 0o777):
 			copyDir(s, d)
 
 log("DEBG", f"PATH = {PATH}")
+os.chdir(PATH)
 
 if (os.path.isfile("version")):
 	with open("version", "r") as f:
