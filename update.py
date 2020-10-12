@@ -127,11 +127,7 @@ if (REMOTE_VERSION > VERSION):
 		msg = f"Copying {'File' if (isFile) else 'Dir '}: {target} -> {dest}"
 
 		logStatus(msg, 0)
-
-		if (os.path.isfile(dest)):
-			os.remove(dest)
-		elif (os.path.isdir(dest)):
-			shutil.rmtree(dest)
+		execute(f"rm -rf {dest}")
 
 		if (os.path.isfile(target)):
 			shutil.copy2(target, dest)
