@@ -46,7 +46,8 @@ def startProxy():
 	tSize = os.get_terminal_size()
 	print("*" * tSize.columns)
 
-	args = sys.argv[:]
+	args = sys.argv[1:]
+	args.insert(0, "proxy.py")
 	args.insert(0, sys.executable)
 	args.insert(0, "sudo")
 	log("DEBG", 'Re-spawning %s' % ' '.join(args))
